@@ -4,7 +4,12 @@ from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("godot")
 
-GODOT_BIN = os.environ.get("GODOT_BIN", "godot-4")
+import shutil as _shutil
+_DEFAULT_GODOT = next(
+    (b for b in ["/home/kiraone/godot4_nono", "godot-4"] if _shutil.which(b) or __import__("os").path.isfile(b)),
+    "godot-4"
+)
+GODOT_BIN = os.environ.get("GODOT_BIN", _DEFAULT_GODOT)
 
 PROJECT_GODOT_TEMPLATE = """; Engine configuration file.
 config_version=5
