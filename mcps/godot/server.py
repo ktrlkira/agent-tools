@@ -57,6 +57,7 @@ html/head_include=""
 html/canvas_resize_policy=2
 html/focus_canvas_on_start=true
 html/experimental_virtual_keyboard=false
+html/use_threads=false
 progressive_web_app/enabled=false
 """
 
