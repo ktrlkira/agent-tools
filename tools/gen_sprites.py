@@ -168,15 +168,57 @@ def make_android_spritesheet() -> Image.Image:
 
 def make_drone() -> Image.Image:
     img = new_sprite()
-    d = ImageDraw.Draw(img)
-    d.ellipse([1, 5, 15, 11], fill=DARK, outline=GREY)
-    d.ellipse([6, 6, 10, 10], fill=RED)
-    d.point([(8, 8)], fill=WHITE)
-    d.line([8, 5, 8, 2], fill=GREY)
-    d.point([(8, 1)], fill=RED)
+
+    def px(x, y, c):
+        if 0 <= x <= 15 and 0 <= y <= 15:
+            img.putpixel((x, y), c)
+
+    # Rotor discs (3x3 at each corner)
+    for (cx, cy) in [(1, 1), (14, 1), (1, 14), (14, 14)]:
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                px(cx + dx, cy + dy, D_ROTOR)
+        px(cx, cy, D_ROTOR_C)    # bright center pixel
+
+    # Arm struts (diagonal, rotor to body corner)
+    # Top-left rotor (1,1) to body corner (5,5)
+    px(3, 3, D_ARM); px(4, 4, D_ARM)
+    # Top-right rotor (14,1) to body corner (10,5)
+    px(12, 3, D_ARM); px(11, 4, D_ARM)
+    # Bottom-left rotor (1,14) to body corner (5,10)
+    px(3, 12, D_ARM); px(4, 11, D_ARM)
+    # Bottom-right rotor (14,14) to body corner (10,10)
+    px(12, 12, D_ARM); px(11, 11, D_ARM)
+
+    # Central body (6x6: x=5..10, y=5..10)
+    for x in range(5, 11):
+        for y in range(5, 11):
+            px(x, y, D_BODY)
+    # Top bevel (highlight)
+    for x in range(5, 11):
+        px(x, 5, D_HI)
+    # Left bevel (highlight)
+    for y in range(5, 11):
+        px(5, y, D_HI)
+    # Bottom bevel (shadow)
+    for x in range(5, 11):
+        px(x, 10, D_SH)
+    # Right bevel (shadow)
+    for y in range(5, 11):
+        px(10, y, D_SH)
+
+    # Warning light (2px amber on top-center of body)
+    px(7, 5, D_WARN); px(8, 5, D_WARN)
+
+    # Camera on RIGHT side (facing right = forward)
+    # 2x3 housing jutting right of body
+    for y in range(6, 9):
+        px(11, y, D_CAM)
+        px(12, y, D_CAM)
+    # Lens highlight (single bright pixel on front face)
+    px(12, 7, D_LENS)
+
     return img
-
-
 def make_floor_tile() -> Image.Image:
     img = new_sprite()
     d = ImageDraw.Draw(img)
